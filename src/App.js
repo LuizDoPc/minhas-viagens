@@ -1,7 +1,5 @@
 import React, { Component } from "react";
 
-import Modal from "react-responsive-modal";
-
 import Toolbar from "./components/Toolbar/Toolbar";
 import SideDrawer from "./components/SideDrawer/SideDrawer";
 import Backdrop from "./components/Backdrop/Backdrop";
@@ -20,7 +18,9 @@ class App extends Component {
       storageBucket: "appdaana-89bcc.appspot.com",
       messagingSenderId: "97719053670"
     };
-    firebase.initializeApp(config);
+    if (!firebase.apps.length) {
+      firebase.initializeApp(config);
+    }
   }
 
   state = {
@@ -28,12 +28,14 @@ class App extends Component {
     modalVisible: false
   };
 
-  setModalVisible(visible) {
-    this.setState({ modalVisible: visible });
-  }
-
-  onCloseModal() {
-    this.setModalVisible(false);
+  async geoCoding(city) {
+    return new Promise(async (resolve, reject) => {
+      let geocode = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${city}&key=AIzaSyAxt-VCR6Hc3dCH8yt6hVpQwIub-vqQBMU`
+      );
+      geocode = geocode.json();
+      resolve(geocode);
+    });
   }
 
   drawerToggleClickHandler = () => {
@@ -46,25 +48,32 @@ class App extends Component {
     this.setState({ sideDrawerOpen: false });
   };
 
-  render() {
-    const { modalVisible } = this.state;
+  setModalVisible(val) {
+    this.setState({ modalVisible: val });
+  }
 
+  render() {
     let backdrop;
 
     if (this.state.sideDrawerOpen) {
       backdrop = <Backdrop click={this.backdropClickHandler} />;
     }
+
     return (
       <div style={{ height: "100%" }}>
-        <Toolbar drawerClickHandler={this.drawerToggleClickHandler} />
+        <Toolbar
+          drawerClickHandler={this.drawerToggleClickHandler}
+          setModalVisible={this.setModalVisible.bind(this)}
+        />
         <SideDrawer show={this.state.sideDrawerOpen} />
         {backdrop}
         <main style={{ marginTop: "64px" }}>
-          <MapContainer />
+          <MapContainer
+            geoCoding={this.geoCoding.bind(this)}
+            setModalVisible={this.setModalVisible.bind(this)}
+            modalVisible={this.state.modalVisible}
+          />
         </main>
-        <Modal open={modalVisible} onClose={this.onCloseModal} center>
-          <h2>Simple centered modal</h2>
-        </Modal>
       </div>
     );
   }

@@ -4,9 +4,11 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@material-ui/core": "^3.9.2",
     "firebase": "^5.8.2",
     "gh-pages": "^2.0.1",
     "google-maps-react": "^2.0.2",
+    "react": "^16.8.1",
     "react-dom": "^16.8.1",
     "react-responsive-modal": "^3.6.0",
     "react-scripts": "2.1.3",
