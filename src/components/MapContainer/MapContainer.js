@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Map, InfoWindow, Marker, GoogleApiWrapper } from "google-maps-react";
+
 import firebase from "firebase";
 
 import Modal from "react-responsive-modal";
@@ -79,6 +80,11 @@ export class Wrap extends Component {
       lng: cidade.geometry.location.lng
     });
     this.props.setModalVisible(false);
+    firebase
+      .database()
+      .ref("/Cidades")
+      .child(`${this.state.cities.length + 1}`)
+      .set({ Nome: cidade.address_components[0].long_name });
   };
 
   render() {
