@@ -17,7 +17,7 @@ const toolbar = props => (
         <ul>
           <li>
             <a href="#" onClick={() => props.setModalVisible(true)}>
-              Adicionar nova cidade
+              Adicionar nova cidade.
             </a>
           </li>
         </ul>
